@@ -29,7 +29,7 @@ interface Tree<T: Comparable<T>> {
             left.inorder(consumer)
             consumer(value)
             right.inorder(consumer)
-    });
+    })
 
     /**
      * Eager tree -> sorted list traversal. Relies on list concatenation, runs in time linear in the size of the tree.
@@ -100,9 +100,11 @@ interface Tree<T: Comparable<T>> {
         override fun empty() = true
     }
 
-    fun <T: Comparable<T>> emptyTree(): Tree<T> {
-        @Suppress("CAST_NEVER_SUCCEEDS")
-        val typedEmptyTree = emptyTreeSingleton as Tree<T>
-        return typedEmptyTree
+    companion object {
+        fun <T : Comparable<T>> emptyTree(): Tree<T> {
+            @Suppress("CAST_NEVER_SUCCEEDS")
+            val typedEmptyTree = emptyTreeSingleton as Tree<T>
+            return typedEmptyTree
+        }
     }
 }
