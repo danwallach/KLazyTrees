@@ -101,10 +101,13 @@ interface Tree<T: Comparable<T>> {
     }
 
     companion object {
-        fun <T : Comparable<T>> emptyTree(): Tree<T> {
+        fun <T: Comparable<T>> emptyTree(): Tree<T> {
             @Suppress("CAST_NEVER_SUCCEEDS")
             val typedEmptyTree = emptyTreeSingleton as Tree<T>
             return typedEmptyTree
         }
+
+        fun <T: Comparable<T>> of(vararg elements: T): Tree<T> =
+                elements.fold(emptyTree()) { tree, t -> tree.insert(t) }
     }
 }
