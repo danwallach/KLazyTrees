@@ -1,0 +1,34 @@
+group 'org.dwallach'
+version '1.0'
+
+buildscript {
+    ext.kotlin_version = '1.0.3'
+
+    repositories {
+	mavenCentral()
+	maven {
+	    url "http://dl.bintray.com/kotlin/kotlinx.coroutines"
+	}
+    }
+
+    dependencies {
+	classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: "kotlin" 
+
+repositories {
+    mavenCentral()
+    maven {
+	url "http://dl.bintray.com/kotlin/kotlinx.coroutines"
+    }
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile "org.jetbrains.kotlinx:kotlinx-coroutines-generate:0.1-alpha-1"
+    compile "org.jetbrains.kotlinx:kotlinx-coroutines-async:0.1-alpha-1"
+    compile "org.jetbrains.kotlinx:kotlinx-coroutines-rx:0.1-alpha-1"
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+}
