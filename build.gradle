@@ -1,14 +1,14 @@
 group 'org.dwallach'
 version '1.0'
 
+apply plugin: "kotlin"
+apply plugin: "idea"
+
 buildscript {
     ext.kotlin_version =  '1.0.3' // doesn't work yet: '1.1-M01'
 
     repositories {
-	mavenCentral()
-        // maven {
-        //     url "https://dl.bintray.com/kotlin/kotlinx.coroutines"
-        // }
+        mavenCentral()
     }
 
     dependencies {
@@ -16,19 +16,17 @@ buildscript {
     }
 }
 
-apply plugin: "kotlin" 
-
 repositories {
     mavenCentral()
-    // maven {
-    //     url "https://dl.bintray.com/kotlin/kotlinx.coroutines"
-    // }
+//    maven {
+//        url "https://dl.bintray.com/kotlin/kotlinx.coroutines"
+//    }
 }
 
 dependencies {
-    // compile "org.jetbrains.kotlinx:kotlinx-coroutines-generate:0.1-alpha-1"
-    // compile "org.jetbrains.kotlinx:kotlinx-coroutines-async:0.1-alpha-1"
-    // compile "org.jetbrains.kotlinx:kotlinx-coroutines-rx:0.1-alpha-1"
+//    compile "org.jetbrains.kotlinx:kotlinx-coroutines-generate:0.1-alpha-1"
+//    compile "org.jetbrains.kotlinx:kotlinx-coroutines-async:0.1-alpha-1"
+//    compile "org.jetbrains.kotlinx:kotlinx-coroutines-rx:0.1-alpha-1"
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
