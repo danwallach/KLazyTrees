@@ -38,4 +38,12 @@ class TreeTest {
             assertEquals(null, tree.find(it))
         }
     }
+
+    @Test fun coroutineTest(): Unit {
+        val tree: Tree<String> = Tree.of("Charlie", "Dorothy", "Bob", "Alice", "Eve")
+        val list: List<String> = listOf("Alice", "Bob", "Charlie", "Dorothy", "Eve")
+
+        val sequence = tree.toLazyList()
+        assertEquals(list.joinToString(","), sequence.joinToString(","))
+    }
 }

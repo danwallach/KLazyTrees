@@ -1,6 +1,7 @@
 package org.dwallach
 
 import java.util.*
+import kotlinx.coroutines.*
 
 /**
  * Super-simple unbalanced binary tree, generic over anything that's Comparable.
@@ -46,15 +47,16 @@ interface Tree<T: Comparable<T>> {
      */
     fun toEagerList(): List<T> = match({ emptyList() }, { value, left, right -> left.toEagerList() + value + right.toEagerList() })
 
-    /*
-    fun toLazyList() = generate<T> {
-        match({}, { value, left, right ->
-            left.toLazyList()
-            yield(value)
-            right.toLazyList()
-        })
+    /**
+     * Lazy version using the shiny new coroutine generator.
+     */
+    fun toLazyList(): Sequence<T> = generate<T> {
+        if(!empty()) {
+            left().toLazyList()
+            yield(value())
+            right().toLazyList()
+        }
     }
-    */
 
     private data class NonEmptyTree<T: Comparable<T>>(val nodeValue: T, val treeLeft: Tree<T>, val treeRight: Tree<T>): Tree<T> {
         override fun empty() = false
