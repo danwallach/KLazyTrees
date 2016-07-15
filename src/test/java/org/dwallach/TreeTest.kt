@@ -15,6 +15,8 @@ class TreeTest {
         val oneElemTree: Tree<String> = emptyTree.insert("Hello")
 
         assertFalse(oneElemTree.empty())
+        assertTrue(oneElemTree.left().empty())
+        assertTrue(oneElemTree.right().empty())
     }
 
     @Test fun listTest(): Unit {
