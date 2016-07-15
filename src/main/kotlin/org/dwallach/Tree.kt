@@ -52,9 +52,9 @@ interface Tree<T: Comparable<T>> {
      */
     fun toLazyList(): Sequence<T> = generate<T> {
         if(!empty()) {
-            left().toLazyList()
+            left().toLazyList().forEach { yield(it) }
             yield(value())
-            right().toLazyList()
+            right().toLazyList().forEach { yield(it) }
         }
     }
 
