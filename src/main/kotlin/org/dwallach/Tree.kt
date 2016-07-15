@@ -10,7 +10,16 @@ interface Tree<T: Comparable<T>> {
 
     fun insert(newbie: T): Tree<T>
 
-    fun find(query: T): T?
+    fun find(query: T): T? =
+      if(empty()) null else {
+          val nodeValue = value()
+          val comparison = query.compareTo(nodeValue)
+          when {
+              comparison == 0 -> nodeValue // no change, it's already there
+              comparison < 0 -> left().find(query)
+              else -> right().find(query)
+          }
+      }
 
     fun left(): Tree<T>
 
@@ -18,7 +27,8 @@ interface Tree<T: Comparable<T>> {
 
     fun value(): T
 
-    fun <R> match(emptyFunc: () -> R, nonEmptyFunc: (value: T, left: Tree<T>, right: Tree<T>) -> R): R
+    fun <R> match(emptyFunc: () -> R, nonEmptyFunc: (value: T, left: Tree<T>, right: Tree<T>) -> R): R =
+      if(empty()) emptyFunc() else nonEmptyFunc(value(), left(), right())
 
     fun size(): Int = match({ 0 }, { value, left, right -> left.size() + right.size() + 1 })
 
@@ -46,7 +56,7 @@ interface Tree<T: Comparable<T>> {
     }
     */
 
-    private class NonEmptyTree<T: Comparable<T>>(val nodeValue: T, val treeLeft: Tree<T>, val treeRight: Tree<T>): Tree<T> {
+    private data class NonEmptyTree<T: Comparable<T>>(val nodeValue: T, val treeLeft: Tree<T>, val treeRight: Tree<T>): Tree<T> {
         override fun empty() = false
 
         override fun insert(newbie: T): Tree<T> {
@@ -58,32 +68,15 @@ interface Tree<T: Comparable<T>> {
             }
         }
 
-        override fun find(query: T): T? {
-            val comparison = query.compareTo(nodeValue)
-            return when {
-                comparison == 0 -> nodeValue // no change, it's already there
-                comparison < 0 -> treeLeft.find(query)
-                else -> treeRight.find(query)
-            }
-        }
-
         override fun left() = treeLeft
 
         override fun right() = treeRight
 
         override fun value() = nodeValue
-
-        override fun <R> match(emptyFunc: () -> R, nonEmptyFunc: (value: T, left: Tree<T>, right: Tree<T>) -> R) =
-                nonEmptyFunc(nodeValue, treeLeft, treeRight)
     }
 
     private object emptyTreeSingleton: Tree<Comparable<Any>> {
         override fun insert(newbie: Comparable<Any>): Tree<Comparable<Any>> = NonEmptyTree(newbie, this, this)
-
-        override fun find(query: Comparable<Any>): Comparable<Any>? = null
-
-        override fun <R> match(emptyFunc: () -> R,
-                               nonEmptyFunc: (Comparable<Any>, Tree<Comparable<Any>>, Tree<Comparable<Any>>) -> R): R = emptyFunc()
 
         override fun left(): Tree<Comparable<Any>> {
             throw NoSuchElementException("can't take left() of an empty tree")

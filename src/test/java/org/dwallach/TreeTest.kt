@@ -17,19 +17,23 @@ class TreeTest {
         assertFalse(oneElemTree.empty())
     }
 
-    @Test fun containsTest(): Unit {
-        val tree: Tree<String> = Tree.of("Charlie", "Dorothy", "Bob", "Alice", "Eve")
-
-        assertTrue(tree.find("Alice") != null)
-        assertTrue(tree.find("Charlie") != null)
-        assertTrue(tree.find("Eve") != null)
-        assertFalse(tree.find("ZZZ") != null)
-    }
-
     @Test fun listTest(): Unit {
         val tree: Tree<String> = Tree.of("Charlie", "Dorothy", "Bob", "Alice", "Eve")
         val list: List<String> = listOf("Alice", "Bob", "Charlie", "Dorothy", "Eve")
 
         assertEquals(list, tree.toEagerList())
+    }
+
+    @Test fun findTest(): Unit {
+        val tree: Tree<String> = Tree.of("Charlie", "Dorothy", "Bob", "Alice", "Eve")
+        val list: List<String> = listOf("Alice", "Bob", "Charlie", "Dorothy", "Eve")
+
+        list.forEach {
+            assertEquals(it, tree.find(it))
+        }
+
+        list.map(String::toUpperCase).forEach {
+            assertEquals(null, tree.find(it))
+        }
     }
 }
