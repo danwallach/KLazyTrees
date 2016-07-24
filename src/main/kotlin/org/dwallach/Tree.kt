@@ -55,7 +55,7 @@ interface Tree<T: Comparable<T>> {
     /**
      * Lazy version using the shiny new coroutine generator.
      */
-    fun toLazyList(): Sequence<T> = generate<T> {
+    fun toLazyList(): Sequence<T> = generate {
         if(!empty()) {
             left().toLazyList().forEach { yield(it) }
             yield(value())
