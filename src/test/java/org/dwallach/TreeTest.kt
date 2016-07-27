@@ -1,7 +1,9 @@
 package org.dwallach
 
-import kotlin.test.*
 import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class TreeTest {
     @Test fun emptyTest(): Unit {
@@ -21,29 +23,47 @@ class TreeTest {
 
     @Test fun listTest(): Unit {
         val tree: Tree<String> = Tree.of("Charlie", "Dorothy", "Bob", "Alice", "Eve")
-        val list: List<String> = listOf("Alice", "Bob", "Charlie", "Dorothy", "Eve")
+        val seq: Sequence<String> = sequenceOf("Alice", "Bob", "Charlie", "Dorothy", "Eve")
 
-        assertEquals(list, tree.toEagerList())
+        assertEquals(seq.joinToString(","), tree.toEagerSequence().joinToString(","))
     }
 
     @Test fun findTest(): Unit {
         val tree: Tree<String> = Tree.of("Charlie", "Dorothy", "Bob", "Alice", "Eve")
-        val list: List<String> = listOf("Alice", "Bob", "Charlie", "Dorothy", "Eve")
+        val seq: Sequence<String> = sequenceOf("Alice", "Bob", "Charlie", "Dorothy", "Eve")
 
-        list.forEach {
+        seq.forEach {
             assertEquals(it, tree.find(it))
         }
 
-        list.map(String::toUpperCase).forEach {
+        seq.map(String::toUpperCase).forEach {
             assertEquals(null, tree.find(it))
         }
     }
 
     @Test fun coroutineTest(): Unit {
         val tree: Tree<String> = Tree.of("Charlie", "Dorothy", "Bob", "Alice", "Eve")
-        val list: List<String> = listOf("Alice", "Bob", "Charlie", "Dorothy", "Eve")
+        val seq: Sequence<String> = sequenceOf("Alice", "Bob", "Charlie", "Dorothy", "Eve")
 
-        val sequence = tree.toLazyList()
-        assertEquals(list.joinToString(","), sequence.joinToString(","))
+        assertEquals(seq.joinToString(","), tree.toEagerSequence().joinToString(","))
+        assertEquals(seq.joinToString(","), tree.toLazySequence().joinToString(","))
+    }
+
+    @Test fun inorderTest(): Unit {
+        val tree: Tree<String> = Tree.of("Charlie", "Dorothy", "Bob", "Alice", "Eve")
+        var counter: Int = 0
+        var map: Map<Int, String> = mapOf()
+
+        tree.inorder {
+            map = map + (counter to it)
+            counter++
+        }
+
+
+        val seq: Sequence<String> = sequenceOf("Alice", "Bob", "Charlie", "Dorothy", "Eve")
+        val integers: Sequence<Int> = sequenceOf(0, 1, 2, 3, 4)
+
+        assertEquals(seq.zip(integers) { str, int -> str to int }.joinToString(","),
+                map.asSequence().map { it.value to it.key }.joinToString(","))
     }
 }

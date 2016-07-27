@@ -36,30 +36,35 @@ interface Tree<T: Comparable<T>> {
      */
     fun <R> match(emptyFunc: () -> R, nonEmptyFunc: nonEmptyFuncAlias<R>): R
 
-    fun size(): Int = match({ 0 }, { value, left, right -> left.size() + right.size() + 1 })
+    fun size(): Int = match({ 0 }) { value, left, right ->
+        left.size() + right.size() + 1
+    }
 
     /**
      * Simple in-order tree traversal.
      */
-    fun inorder(consumer: (T) -> Unit): Unit = match({}, { value, left, right ->
+    fun inorder(consumer: (T) -> Unit): Unit = match({}) { value, left, right ->
             left.inorder(consumer)
             consumer(value)
             right.inorder(consumer)
-    })
+    }
 
     /**
-     * Eager tree -> sorted list traversal. Relies on list concatenation, runs in time linear in the size of the tree.
+     * Eager tree -> sorted sequence. Relies on sequence concatenation, so not blazingly fast.
      */
-    fun toEagerList(): List<T> = match({ emptyList() }, { value, left, right -> left.toEagerList() + value + right.toEagerList() })
+    fun toEagerSequence(): Sequence<T> = match({ emptySequence() }) { value, left, right ->
+        left.toEagerSequence() + value + right.toEagerSequence()
+    }
 
     /**
-     * Lazy version using the shiny new coroutine generator.
+     * Lazy tree -> sorted sequence. Relies on coroutine generators, so if you only need a handful
+     * of elements, this will be significantly faster than [toEagerSequence].
      */
-    fun toLazyList(): Sequence<T> = generate {
-        if(!empty()) {
-            left().toLazyList().forEach { yield(it) }
-            yield(value())
-            right().toLazyList().forEach { yield(it) }
+    fun toLazySequence(): Sequence<T> = match({ emptySequence() }) {
+        value, left, right -> generate {
+            left.toLazySequence().forEach { yield(it) }
+            yield(value)
+            right.toLazySequence().forEach { yield(it) }
         }
     }
 
