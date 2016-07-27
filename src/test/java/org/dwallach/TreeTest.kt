@@ -21,6 +21,16 @@ class TreeTest {
         assertTrue(oneElemTree.right().empty())
     }
 
+    @Test fun sizeTest(): Unit {
+        val emptyTree: Tree<String> = Tree.emptyTree()
+        val oneElemTree: Tree<String> = emptyTree.insert("Hello")
+        val fiveElemTree: Tree<String> = Tree.of("Charlie", "Dorothy", "Bob", "Alice", "Eve")
+
+        assertEquals(0, emptyTree.size())
+        assertEquals(1, oneElemTree.size())
+        assertEquals(5, fiveElemTree.size())
+    }
+
     @Test fun listTest(): Unit {
         val tree: Tree<String> = Tree.of("Charlie", "Dorothy", "Bob", "Alice", "Eve")
         val seq: Sequence<String> = sequenceOf("Alice", "Bob", "Charlie", "Dorothy", "Eve")
@@ -61,9 +71,8 @@ class TreeTest {
 
 
         val seq: Sequence<String> = sequenceOf("Alice", "Bob", "Charlie", "Dorothy", "Eve")
-        val integers: Sequence<Int> = sequenceOf(0, 1, 2, 3, 4)
 
-        assertEquals(seq.zip(integers) { str, int -> str to int }.joinToString(","),
+        assertEquals(seq.mapIndexed { i, s -> s to i }.joinToString(","),
                 map.asSequence().map { it.value to it.key }.joinToString(","))
     }
 }
