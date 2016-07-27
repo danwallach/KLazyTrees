@@ -1,7 +1,7 @@
 package org.dwallach
 
+import kotlinx.coroutines.generate
 import java.util.*
-import kotlinx.coroutines.*
 
 /**
  * Super-simple unbalanced binary tree, generic over anything that's Comparable.
@@ -28,13 +28,13 @@ interface Tree<T: Comparable<T>> {
 
     fun value(): T
 
-    typealias nonEmptyFuncAlias<T,R> = (T, Tree<T>, Tree<T>) -> R
+    typealias nonEmptyFuncAlias<R> = (T, Tree<T>, Tree<T>) -> R
 
     /**
      * Structural pattern matching on a tree: calls one or the other lambda depending on whether the
      * tree node in question is a leaf or an internal node.
      */
-    fun <R> match(emptyFunc: () -> R, nonEmptyFunc: nonEmptyFuncAlias<T,R>): R
+    fun <R> match(emptyFunc: () -> R, nonEmptyFunc: nonEmptyFuncAlias<R>): R
 
     fun size(): Int = match({ 0 }, { value, left, right -> left.size() + right.size() + 1 })
 
@@ -64,7 +64,7 @@ interface Tree<T: Comparable<T>> {
     }
 
     private data class NonEmptyTree<T: Comparable<T>>(val nodeValue: T, val treeLeft: Tree<T>, val treeRight: Tree<T>): Tree<T> {
-        override fun <R> match(emptyFunc: () -> R, nonEmptyFunc: nonEmptyFuncAlias<T,R>): R = nonEmptyFunc(nodeValue, treeLeft, treeRight)
+        override fun <R> match(emptyFunc: () -> R, nonEmptyFunc: Tree<T>.nonEmptyFuncAlias<R>): R = nonEmptyFunc(nodeValue, treeLeft, treeRight)
 
         override fun empty() = false
 
@@ -86,10 +86,10 @@ interface Tree<T: Comparable<T>> {
 
     private object emptyTreeSingleton: Tree<Comparable<Any>> {
         // this works
-        override fun <R> match(emptyFunc: () -> R, nonEmptyFunc: (Comparable<Any>, Tree<Comparable<Any>>, Tree<Comparable<Any>>) -> R): R = emptyFunc()
+//        override fun <R> match(emptyFunc: () -> R, nonEmptyFunc: (Comparable<Any>, Tree<Comparable<Any>>, Tree<Comparable<Any>>) -> R): R = emptyFunc()
 
-        // this says that nonEmptyFuncAlias requires three type parameters, which is incorrect
-//        override fun <R> match(emptyFunc: () -> R, nonEmptyFunc: nonEmptyFuncAlias<Comparable<Any>, R>): R = emptyFunc()
+        // this also works, but seems a bit cumbersome
+        override fun <R> match(emptyFunc: () -> R, nonEmptyFunc: Tree<Comparable<Any>>.nonEmptyFuncAlias<R>): R = emptyFunc()
 
         override fun insert(newbie: Comparable<Any>): Tree<Comparable<Any>> = NonEmptyTree(newbie, this, this)
 
