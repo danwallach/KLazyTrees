@@ -90,10 +90,10 @@ interface Tree<T: Comparable<T>> {
     }
 
     private object emptyTreeSingleton: Tree<Comparable<Any>> {
-        // this works
+        // this works, but is exactly the reason we'd prefer typealiases
 //        override fun <R> match(emptyFunc: () -> R, nonEmptyFunc: (Comparable<Any>, Tree<Comparable<Any>>, Tree<Comparable<Any>>) -> R): R = emptyFunc()
 
-        // this also works, but seems a bit cumbersome
+        // this is better, but is still a bit cumbersone
         override fun <R> match(emptyFunc: () -> R, nonEmptyFunc: Tree<Comparable<Any>>.nonEmptyFuncAlias<R>): R = emptyFunc()
 
         override fun insert(newbie: Comparable<Any>): Tree<Comparable<Any>> = NonEmptyTree(newbie, this, this)
